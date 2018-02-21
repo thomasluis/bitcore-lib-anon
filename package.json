@@ -1,7 +1,7 @@
 {
-  "name": "bitcore-lib-zcash",
-  "version": "0.13.19",
-  "description": "A pure and powerful JavaScript Zcash library.",
+  "name": "bitcore-lib-zclassic",
+  "version": "0.13.19-zclassic",
+  "description": "A pure and powerful JavaScript Zclassic bitcore library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",
   "scripts": {
@@ -61,11 +61,13 @@
     }
   ],
   "keywords": [
+    "zclassic",
+    "zcl",
     "zcash",
     "transaction",
     "address",
     "p2p",
-    "ecies",
+    "cryptocurrencies",
     "cryptocurrency",
     "blockchain",
     "payment",
@@ -78,7 +80,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/str4d/bitcore-lib-zcash.git"
+    "url": "https://github.com/z-classic/bitcore-lib-zclassic.git"
   },
   "browser": {
     "request": "browser-request"
@@ -92,7 +94,7 @@
     "lodash": "=3.10.1"
   },
   "devDependencies": {
-    "bitcore-build-zcash": "str4d/bitcore-build-zcash",
+    "bitcore-build-zclassic": "z-classic/bitcore-build-zclassic",
     "brfs": "^1.2.0",
     "chai": "^1.10.0",
     "gulp": "^3.8.10",

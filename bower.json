@@ -1,19 +1,21 @@
 {
-  "name": "bitcore-lib-zcash",
-  "main": "./bitcore-lib-zcash.min.js",
-  "version": "0.13.19",
+  "name": "bitcore-lib-zclassic",
+  "main": "./bitcore-lib-zclassic.min.js",
+  "version": "0.13.19-zclassic",
   "homepage": "http://bitcore.io",
   "authors": [
     "BitPay, Inc.",
     "Jack Grigg"
   ],
-  "description": "A pure, powerful core for your zcash project.",
+  "description": "A pure, powerful bitcore-lib for Zclassic.",
   "moduleType": [
     "globals"
   ],
   "keywords": [
     "zcash",
+    "zclassic",
     "bitcore",
+    "bitcoin",
     "btc",
     "satoshi"
   ],

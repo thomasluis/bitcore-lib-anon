@@ -6,10 +6,10 @@ var bitcore = module.exports;
 bitcore.version = 'v' + require('./package.json').version;
 bitcore.versionGuard = function(version) {
   if (version !== undefined) {
-    var message = 'More than one instance of bitcore-lib-zcash found. ' +
-      'Please make sure to require bitcore-lib-zcash and check that submodules do' +
-      ' not also include their own bitcore-lib-zcash dependency.';
-    // TODO: put this back if we start versioning again
+    var message = 'More than one instance of bitcore-lib-zclassic found. ' +
+      'Please make sure to require bitcore-lib-zclassic and check that submodules do ' +
+      'not also include their own bitcore-lib-zclassic dependency.';
+    // TODO: put this back if we start versioning again (?)
     //throw new Error(message);
   }
 };
