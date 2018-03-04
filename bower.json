@@ -1,19 +1,19 @@
 {
-  "name": "bitcore-lib-zclassic",
-  "main": "./bitcore-lib-zclassic.min.js",
-  "version": "0.13.19-zclassic",
+  "name": "bitcore-lib-btcp",
+  "main": "./bitcore-lib-btcp.min.js",
+  "version": "0.13.19-btcp",
   "homepage": "http://bitcore.io",
   "authors": [
     "BitPay, Inc.",
     "Jack Grigg"
   ],
-  "description": "A pure, powerful bitcore-lib for Zclassic.",
+  "description": "A pure, powerful bitcore-lib for btcp.",
   "moduleType": [
     "globals"
   ],
   "keywords": [
     "zcash",
-    "zclassic",
+    "btcp",
     "bitcore",
     "bitcoin",
     "btc",

@@ -1,7 +1,7 @@
 {
-  "name": "bitcore-lib-zclassic",
-  "version": "0.13.19-zclassic",
-  "description": "A pure and powerful JavaScript Zclassic bitcore library.",
+  "name": "bitcore-lib-btcp",
+  "version": "0.13.19-btcp",
+  "description": "A pure and powerful JavaScript btcp bitcore library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",
   "scripts": {
@@ -61,7 +61,7 @@
     }
   ],
   "keywords": [
-    "zclassic",
+    "btcp",
     "zcl",
     "zcash",
     "transaction",
@@ -80,7 +80,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/z-classic/bitcore-lib-zclassic.git"
+    "url": "https://github.com/interbiznw-btcpcontrib/bitcore-lib-btcp.git"
   },
   "browser": {
     "request": "browser-request"
@@ -94,7 +94,7 @@
     "lodash": "=3.10.1"
   },
   "devDependencies": {
-    "bitcore-build-zclassic": "z-classic/bitcore-build-zclassic",
+    "bitcore-build-btcp": "interbiznw-btcpcontrib/bitcore-build-btcp",
     "brfs": "^1.2.0",
     "chai": "^1.10.0",
     "gulp": "^3.8.10",

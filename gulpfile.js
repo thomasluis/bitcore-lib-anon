@@ -1,5 +1,5 @@
 
 
-var bitcoreTasks = require('bitcore-build-zclassic');
+var bitcoreTasks = require('bitcore-build-btcp');
 
 bitcoreTasks('lib');
