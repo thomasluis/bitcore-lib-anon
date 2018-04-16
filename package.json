@@ -80,7 +80,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/interbiznw-btcpcontrib/bitcore-lib-btcp.git"
+    "url": "https://github.com/BTCPrivate/bitcore-lib-btcp.git"
   },
   "browser": {
     "request": "browser-request"
@@ -94,7 +94,7 @@
     "lodash": "=3.10.1"
   },
   "devDependencies": {
-    "bitcore-build-btcp": "interbiznw-btcpcontrib/bitcore-build-btcp",
+    "bitcore-build-btcp": "BTCPrivate/bitcore-build-btcp",
     "brfs": "^1.2.0",
     "chai": "^1.10.0",
     "gulp": "^3.8.10",
