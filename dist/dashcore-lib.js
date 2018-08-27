@@ -1917,7 +1917,7 @@ if (typeof Object.create === 'function') {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.1';
+  var VERSION = '4.17.10';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -2048,7 +2048,6 @@ if (typeof Object.create === 'function') {
   /** Used to match property names within property paths. */
   var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
       reIsPlainProp = /^\w*$/,
-      reLeadingDot = /^\./,
       rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 
   /**
@@ -2148,8 +2147,8 @@ if (typeof Object.create === 'function') {
       reOptMod = rsModifier + '?',
       rsOptVar = '[' + rsVarRange + ']?',
       rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
-      rsOrdLower = '\\d*(?:(?:1st|2nd|3rd|(?![123])\\dth)\\b)',
-      rsOrdUpper = '\\d*(?:(?:1ST|2ND|3RD|(?![123])\\dTH)\\b)',
+      rsOrdLower = '\\d*(?:1st|2nd|3rd|(?![123])\\dth)(?=\\b|[A-Z_])',
+      rsOrdUpper = '\\d*(?:1ST|2ND|3RD|(?![123])\\dTH)(?=\\b|[a-z_])',
       rsSeq = rsOptVar + reOptMod + rsOptJoin,
       rsEmoji = '(?:' + [rsDingbat, rsRegional, rsSurrPair].join('|') + ')' + rsSeq,
       rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
@@ -2342,6 +2341,14 @@ if (typeof Object.create === 'function') {
   /** Used to access faster Node.js helpers. */
   var nodeUtil = (function() {
     try {
+      // Use `util.types` for Node.js 10+.
+      var types = freeModule && freeModule.require && freeModule.require('util').types;
+
+      if (types) {
+        return types;
+      }
+
+      // Legacy `process.binding('util')` for Node.js < 10.
       return freeProcess && freeProcess.binding && freeProcess.binding('util');
     } catch (e) {}
   }());
@@ -2355,34 +2362,6 @@ if (typeof Object.create === 'function') {
       nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
 
   /*--------------------------------------------------------------------------*/
-
-  /**
-   * Adds the key-value `pair` to `map`.
-   *
-   * @private
-   * @param {Object} map The map to modify.
-   * @param {Array} pair The key-value pair to add.
-   * @returns {Object} Returns `map`.
-   */
-  function addMapEntry(map, pair) {
-    // Don't return `map.set` because it's not chainable in IE 11.
-    map.set(pair[0], pair[1]);
-    return map;
-  }
-
-  /**
-   * Adds `value` to `set`.
-   *
-   * @private
-   * @param {Object} set The set to modify.
-   * @param {*} value The value to add.
-   * @returns {Object} Returns `set`.
-   */
-  function addSetEntry(set, value) {
-    // Don't return `set.add` because it's not chainable in IE 11.
-    set.add(value);
-    return set;
-  }
 
   /**
    * A faster alternative to `Function#apply`, this function invokes `func`
@@ -3151,6 +3130,20 @@ if (typeof Object.create === 'function') {
   }
 
   /**
+   * Gets the value at `key`, unless `key` is "__proto__".
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {string} key The key of the property to get.
+   * @returns {*} Returns the property value.
+   */
+  function safeGet(object, key) {
+    return key == '__proto__'
+      ? undefined
+      : object[key];
+  }
+
+  /**
    * Converts `set` to an array of its values.
    *
    * @private
@@ -3472,9 +3465,9 @@ if (typeof Object.create === 'function') {
      * Shortcut fusion is an optimization to merge iteratee calls; this avoids
      * the creation of intermediate arrays and can greatly reduce the number of
      * iteratee executions. Sections of a chain sequence qualify for shortcut
-     * fusion if the section is applied to an array of at least `200` elements
-     * and any iteratees accept only one argument. The heuristic for whether a
-     * section qualifies for shortcut fusion is subject to change.
+     * fusion if the section is applied to an array and iteratees accept only
+     * one argument. The heuristic for whether a section qualifies for shortcut
+     * fusion is subject to change.
      *
      * Chaining is supported in custom builds as long as the `_#value` method is
      * directly or indirectly included in the build.
@@ -3633,8 +3626,8 @@ if (typeof Object.create === 'function') {
 
     /**
      * By default, the template delimiters used by lodash are like those in
-     * embedded Ruby (ERB). Change the following template settings to use
-     * alternative delimiters.
+     * embedded Ruby (ERB) as well as ES2015 template strings. Change the
+     * following template settings to use alternative delimiters.
      *
      * @static
      * @memberOf _
@@ -3781,8 +3774,7 @@ if (typeof Object.create === 'function') {
           resIndex = 0,
           takeCount = nativeMin(length, this.__takeCount__);
 
-      if (!isArr || arrLength < LARGE_ARRAY_SIZE ||
-          (arrLength == length && takeCount == length)) {
+      if (!isArr || (!isRight && arrLength == length && takeCount == length)) {
         return baseWrapperValue(array, this.__actions__);
       }
       var result = [];
@@ -3896,7 +3888,7 @@ if (typeof Object.create === 'function') {
      */
     function hashHas(key) {
       var data = this.__data__;
-      return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+      return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
     }
 
     /**
@@ -4370,24 +4362,6 @@ if (typeof Object.create === 'function') {
     }
 
     /**
-     * Used by `_.defaults` to customize its `_.assignIn` use.
-     *
-     * @private
-     * @param {*} objValue The destination value.
-     * @param {*} srcValue The source value.
-     * @param {string} key The key of the property to assign.
-     * @param {Object} object The parent object of `objValue`.
-     * @returns {*} Returns the value to assign.
-     */
-    function assignInDefaults(objValue, srcValue, key, object) {
-      if (objValue === undefined ||
-          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
-        return srcValue;
-      }
-      return objValue;
-    }
-
-    /**
      * This function is like `assignValue` except that it doesn't assign
      * `undefined` values.
      *
@@ -4601,7 +4575,7 @@ if (typeof Object.create === 'function') {
           if (!cloneableTags[tag]) {
             return object ? value : {};
           }
-          result = initCloneByTag(value, tag, baseClone, isDeep);
+          result = initCloneByTag(value, tag, isDeep);
         }
       }
       // Check for circular references and return its corresponding clone.
@@ -4611,6 +4585,22 @@ if (typeof Object.create === 'function') {
         return stacked;
       }
       stack.set(value, result);
+
+      if (isSet(value)) {
+        value.forEach(function(subValue) {
+          result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
+        });
+
+        return result;
+      }
+
+      if (isMap(value)) {
+        value.forEach(function(subValue, key) {
+          result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
+        });
+
+        return result;
+      }
 
       var keysFunc = isFull
         ? (isFlat ? getAllKeysIn : getAllKeys)
@@ -4999,8 +4989,7 @@ if (typeof Object.create === 'function') {
       if (value == null) {
         return value === undefined ? undefinedTag : nullTag;
       }
-      value = Object(value);
-      return (symToStringTag && symToStringTag in value)
+      return (symToStringTag && symToStringTag in Object(value))
         ? getRawTag(value)
         : objectToString(value);
     }
@@ -5204,7 +5193,7 @@ if (typeof Object.create === 'function') {
       if (value === other) {
         return true;
       }
-      if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+      if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
         return value !== value && other !== other;
       }
       return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
@@ -5227,17 +5216,12 @@ if (typeof Object.create === 'function') {
     function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
       var objIsArr = isArray(object),
           othIsArr = isArray(other),
-          objTag = arrayTag,
-          othTag = arrayTag;
+          objTag = objIsArr ? arrayTag : getTag(object),
+          othTag = othIsArr ? arrayTag : getTag(other);
 
-      if (!objIsArr) {
-        objTag = getTag(object);
-        objTag = objTag == argsTag ? objectTag : objTag;
-      }
-      if (!othIsArr) {
-        othTag = getTag(other);
-        othTag = othTag == argsTag ? objectTag : othTag;
-      }
+      objTag = objTag == argsTag ? objectTag : objTag;
+      othTag = othTag == argsTag ? objectTag : othTag;
+
       var objIsObj = objTag == objectTag,
           othIsObj = othTag == objectTag,
           isSameTag = objTag == othTag;
@@ -5545,7 +5529,7 @@ if (typeof Object.create === 'function') {
         }
         else {
           var newValue = customizer
-            ? customizer(object[key], srcValue, (key + ''), object, source, stack)
+            ? customizer(safeGet(object, key), srcValue, (key + ''), object, source, stack)
             : undefined;
 
           if (newValue === undefined) {
@@ -5572,8 +5556,8 @@ if (typeof Object.create === 'function') {
      *  counterparts.
      */
     function baseMergeDeep(object, source, key, srcIndex, mergeFunc, customizer, stack) {
-      var objValue = object[key],
-          srcValue = source[key],
+      var objValue = safeGet(object, key),
+          srcValue = safeGet(source, key),
           stacked = stack.get(srcValue);
 
       if (stacked) {
@@ -5685,7 +5669,6 @@ if (typeof Object.create === 'function') {
      * @returns {Object} Returns the new object.
      */
     function basePick(object, paths) {
-      object = Object(object);
       return basePickBy(object, paths, function(value, path) {
         return hasIn(object, path);
       });
@@ -5710,7 +5693,7 @@ if (typeof Object.create === 'function') {
             value = baseGet(object, path);
 
         if (predicate(value, path)) {
-          baseSet(result, path, value);
+          baseSet(result, castPath(path, object), value);
         }
       }
       return result;
@@ -5786,14 +5769,8 @@ if (typeof Object.create === 'function') {
           var previous = index;
           if (isIndex(index)) {
             splice.call(array, index, 1);
-          }
-          else {
-            var path = castPath(index, array),
-                object = parent(array, path);
-
-            if (object != null) {
-              delete object[toKey(last(path))];
-            }
+          } else {
+            baseUnset(array, index);
           }
         }
       }
@@ -6257,8 +6234,7 @@ if (typeof Object.create === 'function') {
     function baseUnset(object, path) {
       path = castPath(path, object);
       object = parent(object, path);
-      var key = toKey(last(path));
-      return !(object != null && hasOwnProperty.call(object, key)) || delete object[key];
+      return object == null || delete object[toKey(last(path))];
     }
 
     /**
@@ -6490,20 +6466,6 @@ if (typeof Object.create === 'function') {
     }
 
     /**
-     * Creates a clone of `map`.
-     *
-     * @private
-     * @param {Object} map The map to clone.
-     * @param {Function} cloneFunc The function to clone values.
-     * @param {boolean} [isDeep] Specify a deep clone.
-     * @returns {Object} Returns the cloned map.
-     */
-    function cloneMap(map, isDeep, cloneFunc) {
-      var array = isDeep ? cloneFunc(mapToArray(map), CLONE_DEEP_FLAG) : mapToArray(map);
-      return arrayReduce(array, addMapEntry, new map.constructor);
-    }
-
-    /**
      * Creates a clone of `regexp`.
      *
      * @private
@@ -6514,20 +6476,6 @@ if (typeof Object.create === 'function') {
       var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
       result.lastIndex = regexp.lastIndex;
       return result;
-    }
-
-    /**
-     * Creates a clone of `set`.
-     *
-     * @private
-     * @param {Object} set The set to clone.
-     * @param {Function} cloneFunc The function to clone values.
-     * @param {boolean} [isDeep] Specify a deep clone.
-     * @returns {Object} Returns the cloned set.
-     */
-    function cloneSet(set, isDeep, cloneFunc) {
-      var array = isDeep ? cloneFunc(setToArray(set), CLONE_DEEP_FLAG) : setToArray(set);
-      return arrayReduce(array, addSetEntry, new set.constructor);
     }
 
     /**
@@ -7085,8 +7033,7 @@ if (typeof Object.create === 'function') {
           var args = arguments,
               value = args[0];
 
-          if (wrapper && args.length == 1 &&
-              isArray(value) && value.length >= LARGE_ARRAY_SIZE) {
+          if (wrapper && args.length == 1 && isArray(value)) {
             return wrapper.plant(value).value();
           }
           var index = 0,
@@ -7393,7 +7340,7 @@ if (typeof Object.create === 'function') {
       var func = Math[methodName];
       return function(number, precision) {
         number = toNumber(number);
-        precision = nativeMin(toInteger(precision), 292);
+        precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
         if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
@@ -7498,7 +7445,7 @@ if (typeof Object.create === 'function') {
       thisArg = newData[2];
       partials = newData[3];
       holders = newData[4];
-      arity = newData[9] = newData[9] == null
+      arity = newData[9] = newData[9] === undefined
         ? (isBindKey ? 0 : func.length)
         : nativeMax(newData[9] - length, 0);
 
@@ -7516,6 +7463,63 @@ if (typeof Object.create === 'function') {
       }
       var setter = data ? baseSetData : setData;
       return setWrapToString(setter(result, newData), func, bitmask);
+    }
+
+    /**
+     * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
+     * of source objects to the destination object for all destination properties
+     * that resolve to `undefined`.
+     *
+     * @private
+     * @param {*} objValue The destination value.
+     * @param {*} srcValue The source value.
+     * @param {string} key The key of the property to assign.
+     * @param {Object} object The parent object of `objValue`.
+     * @returns {*} Returns the value to assign.
+     */
+    function customDefaultsAssignIn(objValue, srcValue, key, object) {
+      if (objValue === undefined ||
+          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
+        return srcValue;
+      }
+      return objValue;
+    }
+
+    /**
+     * Used by `_.defaultsDeep` to customize its `_.merge` use to merge source
+     * objects into destination objects that are passed thru.
+     *
+     * @private
+     * @param {*} objValue The destination value.
+     * @param {*} srcValue The source value.
+     * @param {string} key The key of the property to merge.
+     * @param {Object} object The parent object of `objValue`.
+     * @param {Object} source The parent object of `srcValue`.
+     * @param {Object} [stack] Tracks traversed source values and their merged
+     *  counterparts.
+     * @returns {*} Returns the value to assign.
+     */
+    function customDefaultsMerge(objValue, srcValue, key, object, source, stack) {
+      if (isObject(objValue) && isObject(srcValue)) {
+        // Recursively merge objects and arrays (susceptible to call stack limits).
+        stack.set(srcValue, objValue);
+        baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
+        stack['delete'](srcValue);
+      }
+      return objValue;
+    }
+
+    /**
+     * Used by `_.omit` to customize its `_.cloneDeep` use to only clone plain
+     * objects.
+     *
+     * @private
+     * @param {*} value The value to inspect.
+     * @param {string} key The key of the property to inspect.
+     * @returns {*} Returns the uncloned value or `undefined` to defer cloning to `_.cloneDeep`.
+     */
+    function customOmitClone(value) {
+      return isPlainObject(value) ? undefined : value;
     }
 
     /**
@@ -7689,9 +7693,9 @@ if (typeof Object.create === 'function') {
      */
     function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
       var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-          objProps = keys(object),
+          objProps = getAllKeys(object),
           objLength = objProps.length,
-          othProps = keys(other),
+          othProps = getAllKeys(other),
           othLength = othProps.length;
 
       if (objLength != othLength && !isPartial) {
@@ -7929,7 +7933,15 @@ if (typeof Object.create === 'function') {
      * @param {Object} object The object to query.
      * @returns {Array} Returns the array of symbols.
      */
-    var getSymbols = nativeGetSymbols ? overArg(nativeGetSymbols, Object) : stubArray;
+    var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+      if (object == null) {
+        return [];
+      }
+      object = Object(object);
+      return arrayFilter(nativeGetSymbols(object), function(symbol) {
+        return propertyIsEnumerable.call(object, symbol);
+      });
+    };
 
     /**
      * Creates an array of the own and inherited enumerable symbols of `object`.
@@ -8060,7 +8072,7 @@ if (typeof Object.create === 'function') {
      */
     function initCloneArray(array) {
       var length = array.length,
-          result = array.constructor(length);
+          result = new array.constructor(length);
 
       // Add properties assigned by `RegExp#exec`.
       if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
@@ -8087,16 +8099,15 @@ if (typeof Object.create === 'function') {
      * Initializes an object clone based on its `toStringTag`.
      *
      * **Note:** This function only supports cloning values with tags of
-     * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+     * `Boolean`, `Date`, `Error`, `Map`, `Number`, `RegExp`, `Set`, or `String`.
      *
      * @private
      * @param {Object} object The object to clone.
      * @param {string} tag The `toStringTag` of the object to clone.
-     * @param {Function} cloneFunc The function to clone values.
      * @param {boolean} [isDeep] Specify a deep clone.
      * @returns {Object} Returns the initialized clone.
      */
-    function initCloneByTag(object, tag, cloneFunc, isDeep) {
+    function initCloneByTag(object, tag, isDeep) {
       var Ctor = object.constructor;
       switch (tag) {
         case arrayBufferTag:
@@ -8115,7 +8126,7 @@ if (typeof Object.create === 'function') {
           return cloneTypedArray(object, isDeep);
 
         case mapTag:
-          return cloneMap(object, isDeep, cloneFunc);
+          return new Ctor;
 
         case numberTag:
         case stringTag:
@@ -8125,7 +8136,7 @@ if (typeof Object.create === 'function') {
           return cloneRegExp(object);
 
         case setTag:
-          return cloneSet(object, isDeep, cloneFunc);
+          return new Ctor;
 
         case symbolTag:
           return cloneSymbol(object);
@@ -8172,10 +8183,13 @@ if (typeof Object.create === 'function') {
      * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
      */
     function isIndex(value, length) {
+      var type = typeof value;
       length = length == null ? MAX_SAFE_INTEGER : length;
+
       return !!length &&
-        (typeof value == 'number' || reIsUint.test(value)) &&
-        (value > -1 && value % 1 == 0 && value < length);
+        (type == 'number' ||
+          (type != 'symbol' && reIsUint.test(value))) &&
+            (value > -1 && value % 1 == 0 && value < length);
     }
 
     /**
@@ -8416,29 +8430,6 @@ if (typeof Object.create === 'function') {
     }
 
     /**
-     * Used by `_.defaultsDeep` to customize its `_.merge` use.
-     *
-     * @private
-     * @param {*} objValue The destination value.
-     * @param {*} srcValue The source value.
-     * @param {string} key The key of the property to merge.
-     * @param {Object} object The parent object of `objValue`.
-     * @param {Object} source The parent object of `srcValue`.
-     * @param {Object} [stack] Tracks traversed source values and their merged
-     *  counterparts.
-     * @returns {*} Returns the value to assign.
-     */
-    function mergeDefaults(objValue, srcValue, key, object, source, stack) {
-      if (isObject(objValue) && isObject(srcValue)) {
-        // Recursively merge objects and arrays (susceptible to call stack limits).
-        stack.set(srcValue, objValue);
-        baseMerge(objValue, srcValue, undefined, mergeDefaults, stack);
-        stack['delete'](srcValue);
-      }
-      return objValue;
-    }
-
-    /**
      * This function is like
      * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
      * except that it includes inherited enumerable properties.
@@ -8648,11 +8639,11 @@ if (typeof Object.create === 'function') {
      */
     var stringToPath = memoizeCapped(function(string) {
       var result = [];
-      if (reLeadingDot.test(string)) {
+      if (string.charCodeAt(0) === 46 /* . */) {
         result.push('');
       }
-      string.replace(rePropName, function(match, number, quote, string) {
-        result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+      string.replace(rePropName, function(match, number, quote, subString) {
+        result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
       });
       return result;
     });
@@ -10180,7 +10171,7 @@ if (typeof Object.create === 'function') {
      *
      * var users = [
      *   { 'user': 'barney',  'active': false },
-     *   { 'user': 'fred',    'active': false},
+     *   { 'user': 'fred',    'active': false },
      *   { 'user': 'pebbles', 'active': true }
      * ];
      *
@@ -12260,9 +12251,11 @@ if (typeof Object.create === 'function') {
       function remainingWait(time) {
         var timeSinceLastCall = time - lastCallTime,
             timeSinceLastInvoke = time - lastInvokeTime,
-            result = wait - timeSinceLastCall;
+            timeWaiting = wait - timeSinceLastCall;
 
-        return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+        return maxing
+          ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+          : timeWaiting;
       }
 
       function shouldInvoke(time) {
@@ -12749,17 +12742,13 @@ if (typeof Object.create === 'function') {
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      start = start === undefined ? 0 : nativeMax(toInteger(start), 0);
+      start = start == null ? 0 : nativeMax(toInteger(start), 0);
       return baseRest(function(args) {
         var array = args[start],
-            lastIndex = args.length - 1,
             otherArgs = castSlice(args, 0, start);
 
         if (array) {
           arrayPush(otherArgs, array);
-        }
-        if (start != lastIndex) {
-          arrayPush(otherArgs, castSlice(args, start + 1));
         }
         return apply(func, this, otherArgs);
       });
@@ -13423,7 +13412,7 @@ if (typeof Object.create === 'function') {
      * date objects, error objects, maps, numbers, `Object` objects, regexes,
      * sets, strings, symbols, and typed arrays. `Object` objects are compared
      * by their own, not inherited, enumerable properties. Functions and DOM
-     * nodes are **not** supported.
+     * nodes are compared by strict equality, i.e. `===`.
      *
      * @static
      * @memberOf _
@@ -14443,7 +14432,9 @@ if (typeof Object.create === 'function') {
      * // => 3
      */
     function toSafeInteger(value) {
-      return baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER);
+      return value
+        ? baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER)
+        : (value === 0 ? value : 0);
     }
 
     /**
@@ -14696,9 +14687,35 @@ if (typeof Object.create === 'function') {
      * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
      * // => { 'a': 1, 'b': 2 }
      */
-    var defaults = baseRest(function(args) {
-      args.push(undefined, assignInDefaults);
-      return apply(assignInWith, undefined, args);
+    var defaults = baseRest(function(object, sources) {
+      object = Object(object);
+
+      var index = -1;
+      var length = sources.length;
+      var guard = length > 2 ? sources[2] : undefined;
+
+      if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+        length = 1;
+      }
+
+      while (++index < length) {
+        var source = sources[index];
+        var props = keysIn(source);
+        var propsIndex = -1;
+        var propsLength = props.length;
+
+        while (++propsIndex < propsLength) {
+          var key = props[propsIndex];
+          var value = object[key];
+
+          if (value === undefined ||
+              (eq(value, objectProto[key]) && !hasOwnProperty.call(object, key))) {
+            object[key] = source[key];
+          }
+        }
+      }
+
+      return object;
     });
 
     /**
@@ -14721,7 +14738,7 @@ if (typeof Object.create === 'function') {
      * // => { 'a': { 'b': 2, 'c': 3 } }
      */
     var defaultsDeep = baseRest(function(args) {
-      args.push(undefined, mergeDefaults);
+      args.push(undefined, customDefaultsMerge);
       return apply(mergeWith, undefined, args);
     });
 
@@ -15095,6 +15112,11 @@ if (typeof Object.create === 'function') {
      * // => { '1': 'c', '2': 'b' }
      */
     var invert = createInverter(function(result, value, key) {
+      if (value != null &&
+          typeof value.toString != 'function') {
+        value = nativeObjectToString.call(value);
+      }
+
       result[value] = key;
     }, constant(identity));
 
@@ -15125,6 +15147,11 @@ if (typeof Object.create === 'function') {
      * // => { 'group1': ['a', 'c'], 'group2': ['b'] }
      */
     var invertBy = createInverter(function(result, value, key) {
+      if (value != null &&
+          typeof value.toString != 'function') {
+        value = nativeObjectToString.call(value);
+      }
+
       if (hasOwnProperty.call(result, value)) {
         result[value].push(key);
       } else {
@@ -15375,16 +15402,16 @@ if (typeof Object.create === 'function') {
       if (object == null) {
         return result;
       }
-      var bitmask = CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG;
+      var isDeep = false;
       paths = arrayMap(paths, function(path) {
         path = castPath(path, object);
-        bitmask |= (path.length > 1 ? CLONE_DEEP_FLAG : 0);
+        isDeep || (isDeep = path.length > 1);
         return path;
       });
-
       copyObject(object, getAllKeysIn(object), result);
-      result = baseClone(result, bitmask);
-
+      if (isDeep) {
+        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
+      }
       var length = paths.length;
       while (length--) {
         baseUnset(result, paths[length]);
@@ -15505,8 +15532,8 @@ if (typeof Object.create === 'function') {
 
       // Ensure the loop is entered when path is empty.
       if (!length) {
-        object = undefined;
         length = 1;
+        object = undefined;
       }
       while (++index < length) {
         var value = object == null ? undefined : object[toKey(path[index])];
@@ -16532,7 +16559,10 @@ if (typeof Object.create === 'function') {
      */
     function startsWith(string, target, position) {
       string = toString(string);
-      position = baseClamp(toInteger(position), 0, string.length);
+      position = position == null
+        ? 0
+        : baseClamp(toInteger(position), 0, string.length);
+
       target = baseToString(target);
       return string.slice(position, position + target.length) == target;
     }
@@ -16651,9 +16681,9 @@ if (typeof Object.create === 'function') {
         options = undefined;
       }
       string = toString(string);
-      options = assignInWith({}, options, settings, assignInDefaults);
+      options = assignInWith({}, options, settings, customDefaultsAssignIn);
 
-      var imports = assignInWith({}, options.imports, settings.imports, assignInDefaults),
+      var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn),
           importsKeys = keys(imports),
           importsValues = baseValues(imports, importsKeys);
 
@@ -18737,14 +18767,13 @@ if (typeof Object.create === 'function') {
     // Add `LazyWrapper` methods for `_.drop` and `_.take` variants.
     arrayEach(['drop', 'take'], function(methodName, index) {
       LazyWrapper.prototype[methodName] = function(n) {
-        var filtered = this.__filtered__;
-        if (filtered && !index) {
-          return new LazyWrapper(this);
-        }
         n = n === undefined ? 1 : nativeMax(toInteger(n), 0);
 
-        var result = this.clone();
-        if (filtered) {
+        var result = (this.__filtered__ && !index)
+          ? new LazyWrapper(this)
+          : this.clone();
+
+        if (result.__filtered__) {
           result.__takeCount__ = nativeMin(n, result.__takeCount__);
         } else {
           result.__views__.push({
@@ -19233,7 +19262,7 @@ module.exports = {
   },
 
   /**
-   * Transforms a buffer into a string with a number in hexa representation
+   * Transforms a buffer into a string with a number in hex representation
    *
    * Shorthand for <tt>buffer.toString('hex')</tt>
    *
@@ -19259,7 +19288,7 @@ module.exports = {
   },
 
   /**
-   * Transforms an hexa encoded string into a Buffer with binary values
+   * Transforms an hex encoded string into a Buffer with binary values
    *
    * Shorthand for <tt>Buffer(string, 'hex')</tt>
    *
@@ -19291,7 +19320,7 @@ var _ = __webpack_require__(2);
  *
  * @name JSUtil.isHexa
  * @param {string} value
- * @return {boolean} true if the string is the hexa representation of a number
+ * @return {boolean} true if the string is the hex representation of a number
  */
 var isHexa = function isHexa(value) {
   if (!_.isString(value)) {
@@ -21262,7 +21291,7 @@ var $ = __webpack_require__(3);
  * @param {Object} extra - additional options
  * @param {Network=} extra.network - Which network should the address for this public key be for
  * @param {String=} extra.compressed - If the public key is compressed
- * @returns {PublicKey} A new valid instance of an PublicKey
+ * @returns {PublicKey} A new valid instance of a PublicKey
  * @constructor
  */
 function PublicKey(data, extra) {
@@ -21366,7 +21395,7 @@ PublicKey._transformPrivateKey = function(privkey) {
 /**
  * Internal function to transform DER into a public key point
  *
- * @param {Buffer} buf - An hex encoded buffer
+ * @param {Buffer} buf - A hex encoded buffer
  * @param {bool=} strict - if set to false, will loosen some conditions
  * @returns {Object} An object with keys: point and compressed
  * @private
@@ -31180,7 +31209,7 @@ function Address(data, network, type) {
   if (type && (type !== Address.PayToPublicKeyHash && type !== Address.PayToScriptHash)) {
     throw new TypeError('Third argument must be "pubkeyhash" or "scripthash".');
   }
-
+  
   var info = this._classifyArguments(data, network, type);
 
   // set defaults if not set
@@ -31209,6 +31238,7 @@ Address.prototype._classifyArguments = function(data, network, type) {
   if ((data instanceof Buffer || data instanceof Uint8Array) && data.length === 20) {
     return Address._transformHash(data);
   } else if ((data instanceof Buffer || data instanceof Uint8Array) && data.length === 21) {
+    
     return Address._transformBuffer(data, network, type);
   } else if (data instanceof PublicKey) {
     return Address._transformPublicKey(data);
@@ -31272,7 +31302,7 @@ Address._transformObject = function(data) {
  */
 Address._classifyFromVersion = function(buffer) {
   var version = {};
-
+  
   var pubkeyhashNetwork = Networks.get(buffer[0], 'pubkeyhash');
   var scripthashNetwork = Networks.get(buffer[0], 'scripthash');
 
@@ -31288,7 +31318,7 @@ Address._classifyFromVersion = function(buffer) {
 };
 
 /**
- * Internal function to transform a bitcoin address buffer
+ * Internal function to transform a Bitcoin address buffer
  *
  * @param {Buffer} buffer - An instance of a hex encoded address Buffer
  * @param {string=} network - The network: 'livenet' or 'testnet'
@@ -31302,13 +31332,17 @@ Address._transformBuffer = function(buffer, network, type) {
   if (!(buffer instanceof Buffer) && !(buffer instanceof Uint8Array)) {
     throw new TypeError('Address supplied is not a buffer.');
   }
-  if (buffer.length !== 1 + 20) {
-    throw new TypeError('Address buffers must be exactly 21 bytes.');
+  if (buffer.length !== 1 + 20 && buffer.length !== 1 + 21) {
+    
+    
+    throw new TypeError('Address buffers must be exactly 21 bytes. ', buffer.length);
   }
 
   network = Networks.get(network);
   var bufferVersion = Address._classifyFromVersion(buffer);
-
+  console.log("buffer is", buffer);
+  console.log("bufferVersion is", bufferVersion);
+  console.log("NETWORK IS ", network)
   if (!bufferVersion.network || (network && network !== bufferVersion.network)) {
     throw new TypeError('Address has mismatched network type.');
   }
@@ -31388,6 +31422,7 @@ Address._transformString = function(data, network, type) {
   }
   data = data.trim();
   var addressBuffer = Base58Check.decode(data);
+  console.log("I AM INSIDE OF TRANSFORMSTRING AND MY DATA IS", data, "MY NETWORK IS", network, " MY TYPE IS", type );
   var info = Address._transformBuffer(addressBuffer, network, type);
   return info;
 };
@@ -31481,12 +31516,13 @@ Address.fromBuffer = function(buffer, network, type) {
 /**
  * Instantiate an address from an address string
  *
- * @param {string} str - An string of the bitcoin address
+ * @param {string} str - A string of the Bitcoin address
  * @param {String|Network=} network - either a Network instance, 'livenet', or 'testnet'
  * @param {string=} type - The type of address: 'script' or 'pubkey'
  * @returns {Address} A new valid and frozen instance of an Address
  */
 Address.fromString = function(str, network, type) {
+  console.log("I AM INSIDE OF FROMSTRING AND MY STR IS ", str, "MY NETWORK IS", network, "MY TYPE IS", type);
   var info = Address._transformString(str, network, type);
   return new Address(info.hashBuffer, info.network, info.type);
 };
@@ -31587,7 +31623,7 @@ Address.prototype.toObject = Address.prototype.toJSON = function toObject() {
 };
 
 /**
- * Will return a the string representation of the address
+ * Will return a string representation of the address
  *
  * @returns {string} Bitcoin address
  */
@@ -32527,18 +32563,15 @@ function removeNetwork(network) {
 addNetwork({
   name: 'livenet',
   alias: 'mainnet',
-  pubkeyhash: 0x4c,
-  privatekey: 0xcc,
-  scripthash: 0x10,
+  pubkeyhash: 0x05 || 0x82,
+  privatekey: 0x80,
+  scripthash: 0x53,
   xpubkey: 0x488b21e,    // 'xpub' (Bitcoin Default)
   xprivkey: 0x488ade4,   // 'xprv' (Bitcoin Default)
-  networkMagic: 0xbf0c6bbd,
-  port: 9999,
+  networkMagic: 0x83d847a7,
+  port: 33155,
   dnsSeeds: [
-    'dnsseed.darkcoin.io',
-    'dnsseed.dashdot.io',
-    'dnsseed.masternode.io',
-    'dnsseed.dashpay.io'
+    '198.58.103.84'
   ]
 });
 
@@ -32551,9 +32584,9 @@ var livenet = get('livenet');
 addNetwork({
   name: 'testnet',
   alias: 'regtest',
-  pubkeyhash: 0x8c,
+  pubkeyhash: 0x1C,
   privatekey: 0xef,
-  scripthash: 0x13,
+  scripthash: 0x1C,
   xpubkey: 0x43587cf,     // 'tpub' (Bitcoin Default)
   xprivkey: 0x04358394    // 'tprv' (Bitcoin Default)
 });
@@ -33336,7 +33369,7 @@ var $ = __webpack_require__(3);
  *
  * @param {string} data - The encoded data in various formats
  * @param {Network|string=} network - a {@link Network} object, or a string with the network name
- * @returns {PrivateKey} A new valid instance of an PrivateKey
+ * @returns {PrivateKey} A new valid instance of a PrivateKey
  * @constructor
  */
 function PrivateKey(data, network) {
@@ -33354,7 +33387,7 @@ function PrivateKey(data, network) {
 
   // validation
   if (!info.bn || info.bn.cmp(new BN(0)) === 0){
-    throw new TypeError('Number can not be equal to zero, undefined, null or false');
+    throw new TypeError('Number cannot be equal to zero, undefined, null or false');
   }
   if (!info.bn.lt(Point.getN())) {
     throw new TypeError('Number must be less than N');
@@ -33389,6 +33422,7 @@ function PrivateKey(data, network) {
  */
 PrivateKey.prototype._classifyArguments = function(data, network) {
   /* jshint maxcomplexity: 10 */
+
   var info = {
     compressed: true,
     network: network ? Networks.get(network) : Networks.defaultNetwork
@@ -33399,7 +33433,7 @@ PrivateKey.prototype._classifyArguments = function(data, network) {
     info.bn = PrivateKey._getRandomBN();
   } else if (data instanceof BN) {
     info.bn = data;
-  } else if (data instanceof Buffer || data instanceof Uint8Array) {
+  } else if (data instanceof Buffer || data instanceof Uint8Array) {    
     info = PrivateKey._transformBuffer(data, network);
   } else if (data.bn && data.network){
     info = PrivateKey._transformObject(data);
@@ -33415,6 +33449,7 @@ PrivateKey.prototype._classifyArguments = function(data, network) {
   } else {
     throw new TypeError('First argument is an unrecognized data type.');
   }
+
   return info;
 };
 
@@ -41936,7 +41971,7 @@ Transaction.prototype._getHash = function() {
 };
 
 /**
- * Retrieve a hexa string that can be used with bitcoind's CLI interface
+ * Retrieve a hex string that can be used with bitcoind's CLI interface
  * (decoderawtransaction, sendrawtransaction)
  *
  * @param {Object|boolean=} unsafe if true, skip all tests. if it's an object,
@@ -41962,7 +41997,7 @@ Transaction.prototype.uncheckedSerialize = Transaction.prototype.toString = func
 };
 
 /**
- * Retrieve a hexa string that can be used with bitcoind's CLI interface
+ * Retrieve a hex string that can be used with bitcoind's CLI interface
  * (decoderawtransaction, sendrawtransaction)
  *
  * @param {Object} opts allows to skip certain tests. {@see Transaction#serialize}
@@ -43090,7 +43125,7 @@ var UNITS = {
  *
  * @param {Number} amount - The amount to be represented
  * @param {String|Number} code - The unit of the amount or the exchange rate
- * @returns {Unit} A new instance of an Unit
+ * @returns {Unit} A new instance of a Unit
  * @constructor
  */
 function Unit(amount, code) {
@@ -43262,7 +43297,7 @@ Unit.prototype.atRate = function(rate) {
 };
 
 /**
- * Returns a the string representation of the value in satoshis
+ * Returns a string representation of the value in satoshis
  *
  * @returns {string} the value in satoshis
  */
@@ -51970,8 +52005,8 @@ var BufferUtil = __webpack_require__(5);
 var JSUtil = __webpack_require__(6);
 
 /**
- * A bitcoin transaction script. Each transaction's inputs and outputs
- * has a script that is evaluated to validate it's spending.
+ * A Bitcoin transaction script. Each transaction's inputs and outputs
+ * has a script that is evaluated to validate its spending.
  *
  * See https://en.bitcoin.it/wiki/Script
  *
@@ -53325,7 +53360,7 @@ MerkleBlock.prototype.validMerkleTree = function validMerkleTree() {
 };
 
 /**
- * Traverse a the tree in this MerkleBlock, validating it along the way
+ * Traverse the tree in this MerkleBlock, validating it along the way
  * Modeled after Bitcoin Core merkleblock.cpp TraverseAndExtract()
  * @param {Number} - depth - Current height
  * @param {Number} - pos - Current position in the tree
@@ -54652,7 +54687,7 @@ function GovObject(serialized) {
 }
 
 /**
- * dataHex will output GovObject 'data-hex' value, should be overriden by specific object type
+ * dataHex will output GovObject 'data-hex' value, should be overridden by specific object type
  *
  */
 GovObject.prototype.dataHex = function() {
@@ -54661,7 +54696,7 @@ GovObject.prototype.dataHex = function() {
 };
 
 /**
- * GovObject instantiation method, should be overriden by specific GovObject type
+ * GovObject instantiation method, should be overridden by specific GovObject type
  *
  * @private
  */
@@ -54727,7 +54762,7 @@ GovObject.prototype.fromString = function(string) {
 };
 
 /**
- * Retrieve a hexa string that can be used with dashd's CLI interface
+ * Retrieve a hex string that can be used with dashd's CLI interface
  *
  * @param {Object} opts allows to skip certain tests. {@see Transaction#serialize}
  * @return {string}
@@ -55120,7 +55155,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 /* 131 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"@dashevo/dashcore-lib","version":"0.15.5","description":"A pure and powerful JavaScript Dash library.","author":"BitPay <dev@bitpay.com>","main":"index.js","scripts":{"lint":"jshint . || true","test":"npm run build && npm run test:node && npm run test:browser && npm run lint","test:node":"mocha --no-timeouts --recursive","test:browser":"karma start ./karma.conf.js --single-run","coverage":"nyc mocha --recursive","build":"webpack --display-error-details"},"contributors":[{"name":"Daniel Cousens","email":"bitcoin@dcousens.com"},{"name":"Esteban Ordano","email":"eordano@gmail.com"},{"name":"Gordon Hall","email":"gordon@bitpay.com"},{"name":"Jeff Garzik","email":"jgarzik@bitpay.com"},{"name":"Kyle Drake","email":"kyle@kyledrake.net"},{"name":"Manuel Araoz","email":"manuelaraoz@gmail.com"},{"name":"Matias Alejo Garcia","email":"ematiu@gmail.com"},{"name":"Ryan X. Charles","email":"ryanxcharles@gmail.com"},{"name":"Stefan Thomas","email":"moon@justmoon.net"},{"name":"Stephen Pair","email":"stephen@bitpay.com"},{"name":"Wei Lu","email":"luwei.here@gmail.com"},{"name":"UdjinM6","email":"UdjinM6@gmail.com"},{"name":"Jon Kindel","email":"jon@dash.org"},{"name":"Alex Werner","email":"alex@werner.fr"}],"keywords":["dash","transaction","address","p2p","ecies","cryptocurrency","blockchain","payment","bip21","bip32","bip37","bip69","bip70","multisig","dashcore"],"repository":{"type":"git","url":"https://github.com/dashevo/dashcore-lib.git"},"bugs":{"url":"https://github.com/dashevo/dashcore-lib/issues"},"homepage":"https://github.com/dashevo/dashcore-lib","browser":{"request":"browser-request"},"dependencies":{"bn.js":"=2.0.4","bs58":"=2.0.0","buffer-compare":"=1.0.0","elliptic":"=3.0.3","inherits":"=2.0.1","lodash":"=4.17.1","sha512":"=0.0.1","@dashevo/x11-hash-js":"^1.0.2"},"devDependencies":{"brfs":"^1.2.0","chai":"^1.10.0","gulp":"^3.8.10","jshint":"^2.9.5","karma":"^2.0.0","karma-chai":"^0.1.0","karma-chrome-launcher":"^2.2.0","karma-detect-browsers":"^2.2.6","karma-firefox-launcher":"^1.1.0","karma-mocha":"^1.3.0","karma-mocha-reporter":"^2.2.5","karma-webpack":"^3.0.0","mocha":"^5.0.4","nyc":"^11.6.0","raw-loader":"^0.5.1","sinon":"^4.2.2","transform-loader":"^0.2.4","uglifyjs-webpack-plugin":"^1.2.4","webpack":"^3.10.0"},"license":"MIT"}
+module.exports = {"name":"@dashevo/dashcore-lib","version":"0.15.5","description":"A pure and powerful JavaScript Dash library.","author":"BitPay <dev@bitpay.com>","main":"index.js","scripts":{"lint":"jshint . || true","test":"npm run build && npm run test:node && npm run test:browser && npm run lint","test:node":"mocha --no-timeouts --recursive","test:browser":"karma start ./karma.conf.js --single-run","coverage":"nyc mocha --recursive","build":"webpack --display-error-details"},"contributors":[{"name":"Daniel Cousens","email":"bitcoin@dcousens.com"},{"name":"Esteban Ordano","email":"eordano@gmail.com"},{"name":"Gordon Hall","email":"gordon@bitpay.com"},{"name":"Jeff Garzik","email":"jgarzik@bitpay.com"},{"name":"Kyle Drake","email":"kyle@kyledrake.net"},{"name":"Manuel Araoz","email":"manuelaraoz@gmail.com"},{"name":"Matias Alejo Garcia","email":"ematiu@gmail.com"},{"name":"Ryan X. Charles","email":"ryanxcharles@gmail.com"},{"name":"Stefan Thomas","email":"moon@justmoon.net"},{"name":"Stephen Pair","email":"stephen@bitpay.com"},{"name":"Wei Lu","email":"luwei.here@gmail.com"},{"name":"UdjinM6","email":"UdjinM6@gmail.com"},{"name":"Jon Kindel","email":"jon@dash.org"},{"name":"Alex Werner","email":"alex@werner.fr"}],"keywords":["dash","transaction","address","p2p","ecies","cryptocurrency","blockchain","payment","bip21","bip32","bip37","bip69","bip70","multisig","dashcore"],"repository":{"type":"git","url":"https://github.com/dashevo/dashcore-lib.git"},"bugs":{"url":"https://github.com/dashevo/dashcore-lib/issues"},"homepage":"https://github.com/dashevo/dashcore-lib","browser":{"request":"browser-request"},"dependencies":{"@dashevo/x11-hash-js":"^1.0.2","bn.js":"=2.0.4","bs58":"=2.0.0","buffer-compare":"=1.0.0","elliptic":"=3.0.3","inherits":"=2.0.1","lodash":"^4.17.10","sha512":"=0.0.1"},"devDependencies":{"brfs":"^1.2.0","chai":"^1.10.0","gulp":"^3.8.10","jshint":"^2.9.6","karma":"^2.0.0","karma-chai":"^0.1.0","karma-chrome-launcher":"^2.2.0","karma-detect-browsers":"^2.2.6","karma-firefox-launcher":"^1.1.0","karma-mocha":"^1.3.0","karma-mocha-reporter":"^2.2.5","karma-webpack":"^3.0.0","mocha":"^5.0.4","nyc":"^11.6.0","raw-loader":"^0.5.1","sinon":"^4.2.2","transform-loader":"^0.2.4","uglifyjs-webpack-plugin":"^1.2.4","webpack":"^3.10.0"},"license":"MIT"}
 
 /***/ }),
 /* 132 */
@@ -55291,7 +55326,7 @@ module.exports = [{
     message: 'Invalid derivation argument {0}, expected string, or number and boolean'
   }, {
     name: 'InvalidEntropyArgument',
-    message: 'Invalid entropy: must be an hexa string or binary buffer, got {0}',
+    message: 'Invalid entropy: must be a hex string or binary buffer, got {0}',
     errors: [{
       name: 'TooMuchEntropy',
       message: 'Invalid entropy: more than 512 bits is non standard, got "{0}"'
@@ -55352,7 +55387,7 @@ module.exports = function isBuffer(arg) {
 /* 134 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["elliptic@3.0.3","/Users/awerner/GitHub/__tmp/dashcore-lib"]],"_from":"elliptic@3.0.3","_id":"elliptic@3.0.3","_inBundle":false,"_integrity":"sha1-hlybQgv75VAGuflp+XoNLESWZZU=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@3.0.3","name":"elliptic","escapedName":"elliptic","rawSpec":"3.0.3","saveSpec":null,"fetchSpec":"3.0.3"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-3.0.3.tgz","_spec":"3.0.3","_where":"/Users/awerner/GitHub/__tmp/dashcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^2.0.0","brorand":"^1.0.1","hash.js":"^1.0.0","inherits":"^2.0.1"},"description":"EC cryptography","devDependencies":{"browserify":"^3.44.2","jscs":"^1.11.3","jshint":"^2.6.0","mocha":"^2.1.0","uglify-js":"^2.4.13"},"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"test":"make lint && mocha --reporter=spec test/*-test.js"},"version":"3.0.3"}
+module.exports = {"_args":[["elliptic@3.0.3","/Users/luisthomas/dashcore-lib"]],"_from":"elliptic@3.0.3","_id":"elliptic@3.0.3","_inBundle":false,"_integrity":"sha1-hlybQgv75VAGuflp+XoNLESWZZU=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@3.0.3","name":"elliptic","escapedName":"elliptic","rawSpec":"3.0.3","saveSpec":null,"fetchSpec":"3.0.3"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-3.0.3.tgz","_spec":"3.0.3","_where":"/Users/luisthomas/dashcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^2.0.0","brorand":"^1.0.1","hash.js":"^1.0.0","inherits":"^2.0.1"},"description":"EC cryptography","devDependencies":{"browserify":"^3.44.2","jscs":"^1.11.3","jshint":"^2.6.0","mocha":"^2.1.0","uglify-js":"^2.4.13"},"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"test":"make lint && mocha --reporter=spec test/*-test.js"},"version":"3.0.3"}
 
 /***/ }),
 /* 135 */
@@ -75211,7 +75246,7 @@ module.exports.makeKey = makeKey
 /* 218 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["elliptic@6.4.0","/Users/awerner/GitHub/__tmp/dashcore-lib"]],"_development":true,"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/browserify-sign/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/awerner/GitHub/__tmp/dashcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
+module.exports = {"_args":[["elliptic@6.4.0","/Users/luisthomas/dashcore-lib"]],"_development":true,"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/browserify-sign/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/luisthomas/dashcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
 /* 219 */
@@ -84187,7 +84222,7 @@ function formatReturnValue(bn, enc, len) {
 /* 251 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["elliptic@6.4.0","/Users/awerner/GitHub/__tmp/dashcore-lib"]],"_development":true,"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/create-ecdh/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/awerner/GitHub/__tmp/dashcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
+module.exports = {"_args":[["elliptic@6.4.0","/Users/luisthomas/dashcore-lib"]],"_development":true,"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/create-ecdh/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/luisthomas/dashcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
 /* 252 */
@@ -90887,8 +90922,8 @@ var Unit = __webpack_require__(81);
 /**
  * Bitcore URI
  *
- * Instantiate an URI from a bitcoin URI String or an Object. An URI instance
- * can be created with a bitcoin uri string or an object. All instances of
+ * Instantiate an URI from a Bitcoin URI String or an Object. A URI instance
+ * can be created with a Bitcoin URI string or an object. All instances of
  * URI are valid, the static method isValid allows checking before instantiation.
  *
  * All standard parameters can be found as members of the class, the address
@@ -90902,7 +90937,7 @@ var Unit = __webpack_require__(81);
  * console.log(uri.address, uri.amount);
  * ```
  *
- * @param {string|Object} data - A bitcoin URI string or an Object
+ * @param {string|Object} data - A Bitcoin URI string or an Object
  * @param {Array.<string>=} knownParams - Required non-standard params
  * @throws {TypeError} Invalid bitcoin address
  * @throws {TypeError} Invalid amount
@@ -90973,6 +91008,7 @@ URI.isValid = function(arg, knownParams) {
   try {
     new URI(arg, knownParams);
   } catch (err) {
+    console.log("THIS THE ERROR", err);
     return false;
   }
   return true;
@@ -90988,7 +91024,7 @@ URI.isValid = function(arg, knownParams) {
 URI.parse = function(uri) {
   var info = URL.parse(uri, true);
 
-  if (info.protocol !== 'dash:') {
+  if (info.protocol !== 'anon:') {
     throw new TypeError('Invalid dash URI');
   }
 
@@ -91011,8 +91047,8 @@ URI.Members = ['address', 'amount', 'message', 'label', 'r'];
  */
 URI.prototype._fromObject = function(obj) {
   /* jshint maxcomplexity: 10 */
-
   if (!Address.isValid(obj.address)) {
+    console.log(obj.address, " IS NOT A VALID ADDRESS")
     throw new TypeError('Invalid dash address');
   }
 
@@ -91062,7 +91098,7 @@ URI.prototype.toObject = URI.prototype.toJSON = function toObject() {
 };
 
 /**
- * Will return a the string representation of the URI
+ * Will return a string representation of the URI
  *
  * @returns {string} Bitcoin URI string
  */
@@ -91083,7 +91119,7 @@ URI.prototype.toString = function() {
   _.extend(query, this.extras);
 
   return URL.format({
-    protocol: 'dash:',
+    protocol: 'anon:',
     host: this.address,
     query: query
   });
@@ -92656,7 +92692,7 @@ Message.prototype._sign = function _sign(privateKey) {
 };
 
 /**
- * Will sign a message with a given bitcoin private key.
+ * Will sign a message with a given Bitcoin private key.
  *
  * @param {PrivateKey} privateKey - An instance of PrivateKey
  * @returns {String} A base64 encoded compact signature

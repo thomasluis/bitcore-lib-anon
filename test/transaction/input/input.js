@@ -14,7 +14,7 @@ var Input = bitcore.Transaction.Input;
 
 describe('Transaction.Input', function() {
 
-  var privateKey = new PrivateKey('XBK4nzpDtLX1xZjoAFq7LJEAu2JgnJgqA7ZPK1eCLHd9AXSx1M6L');
+  var privateKey = new PrivateKey('L3mXtY9DpWoBC9dGzmQxEoST6qkoMsFQW5NWQpWnnp3gWRSGxSCS');
   var publicKey = privateKey.publicKey;
   var address = new Address(publicKey, Networks.livenet);
   var output = {

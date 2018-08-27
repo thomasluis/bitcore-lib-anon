@@ -821,7 +821,7 @@ describe('Script', function() {
       data.should.deep.equal(new Buffer(0));
     });
     it('for a P2PKH address', function() {
-      var address = Address.fromString('XxGJLCB7BBXAgA1AbgtNDMyVpQV9yXd7oB');
+      var address = Address.fromString('AnhxGKoJVNCohvbAxoef7BTedEQok4cEDnG');
       var script = Script.buildPublicKeyHashOut(address);
       expect(BufferUtil.equal(script.getData(), address.hashBuffer)).to.be.true();
     });
@@ -862,7 +862,7 @@ describe('Script', function() {
       script.toAddress().network.should.equal(Networks.defaultNetwork);
     });
     it('for a P2PKH address', function() {
-      var stringAddress = 'XxGJLCB7BBXAgA1AbgtNDMyVpQV9yXd7oB';
+      var stringAddress = 'AnhxGKoJVNCohvbAxoef7BTedEQok4cEDnG';
       var address = new Address(stringAddress);
       var script = new Script(address);
       script.toAddress().toString().should.equal(stringAddress);

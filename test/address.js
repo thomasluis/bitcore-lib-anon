@@ -68,11 +68,11 @@ describe('Address', function() {
 
   // livenet valid
   var PKHLivenet = [
-    'XfcbSaK1dtEe6GmNRE5pMS3WYpoJ2D1BDm',
-    'XjnkiGYQkC3bbAzvDjP7jkNouHCHNRr3ug',
-    'XmWSeuzXVq1mb6GtyTXkYT3UgLo5uVR7XG',
-    'XtfsoT5X39fbxyH4h8VJoQ8CVyLjojjUST',
-    '    XtfsoT5X39fbxyH4h8VJoQ8CVyLjojjUST   \t\n'
+    'AnZtWs3AHPTbyVy3LMDTauKmakpbm4Z69mG',
+    'AnSBQr2pozEXe7R64Mh1BXV2bFZCg9sMFk4',
+    'AneBMoAdaBqtX67jfk7EujuZ7o59hNPJ1dR',
+    'AnimVk29U7jiKKXBoFzg8HcRjZ7zRZU1yTg',
+    '    AnimVk29U7jiKKXBoFzg8HcRjZ7zRZU1yTg   \t\n'
   ];
 
   // livenet p2sh
@@ -110,11 +110,13 @@ describe('Address', function() {
 
   //testnet valid
   var PKHTestnet = [
-    'ygvvbEYBpb3HpVR6LGpKNgfNNZ78jy8YhJ',
-    'yitSbZgHcy1quf4h4jobhw6SJ61KFgXiVC',
-    'yafMmecBxeDBf5Kfuz1PYvqJk58pEhUncx',
-    'yZKdLYCvDXa2kyQr8Tg3N6c3xeZoK7XDcj'
+    'tAGbbd6twYw1bJvnUBBdywGCyXgNWDcaqmf',
+    'tAKXa5k5r6ojkc9HUi4wgv3SP9Qd8bM9seW',
+    'tAR9wNrZ8agFa1AWtLzbh1adg5MWF9Q64qh',
+    'tAGHJqXkSqb6PcAppAvHxWjP33acvucDGC6'
   ];
+
+
 
   describe('validation', function() {
 

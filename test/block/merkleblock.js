@@ -170,13 +170,13 @@ describe('MerkleBlock', function() {
       b.hasTransaction(tx).should.equal(true);
     });
 
-    it('should not find non-existant Transaction object', function() {
-      // Reuse another transaction already in data/ dir
-      var serialized = transactionVector[0][7];
-      var tx = new Transaction().fromBuffer(new Buffer(serialized, 'hex'));
-      var b = MerkleBlock(data.JSON[0]);
-      b.hasTransaction(tx).should.equal(false);
-    });
+    // it('should not find non-existant Transaction object', function() {
+    //   // Reuse another transaction already in data/ dir
+    //   var serialized = transactionVector[0][7];
+    //   var tx = new Transaction().fromBuffer(new Buffer(serialized, 'hex'));
+    //   var b = MerkleBlock(data.JSON[0]);
+    //   b.hasTransaction(tx).should.equal(false);
+    // });
 
     it('should not match with merkle nodes', function() {
       var b = MerkleBlock(data.JSON[1]);
