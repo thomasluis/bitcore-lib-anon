@@ -61,20 +61,20 @@ Please send pull requests for bug fixes, code optimization, and ideas for improv
 
 ## Building the Browser Bundle
 
-To build a dashcore-lib full bundle for the browser:
+To build a anoncore-lib full bundle for the browser:
 
 ```sh
 npm run build
 ```
 
-This will generate files named `dashcore-lib.js` and `dashcore-lib.min.js` in the `dist/` folder.
+This will generate files named `anoncore-lib.js` and `anoncore-lib.min.js` in the `dist/` folder.
 
 ## Usage on Browser
 
 ```
-<script src='./dist/dashcore-lib.min.js' type="text/javascript"></script>
+<script src='./dist/anoncore-lib.min.js' type="text/javascript"></script>
 <script>
-  const PrivateKey = dashcore.PrivateKey;
+  const PrivateKey = anoncore.PrivateKey;
   const privateKey = new PrivateKey();
   const address = privateKey.toAddress().toString();
 </script>
@@ -83,7 +83,7 @@ This will generate files named `dashcore-lib.js` and `dashcore-lib.min.js` in th
 ## Development & Tests
 
 ```sh
-git clone https://github.com/dashevo/dashcore-lib
+git clone https://github.com/anonymousbitcoin/dashcore-lib
 cd dashcore-lib
 npm install
 ```
