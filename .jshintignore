@@ -1,5 +1,5 @@
 ./node_modules/*
-bitcore-lib-dash.js
-bitcore-lib-dash.min.js
+anoncore-lib.js
+anoncore-lib.min.js
 ./test/*
 ./dist/*

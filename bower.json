@@ -1,8 +1,8 @@
 {
-  "name": "bitcore-lib-dash",
-  "main": "./bitcore-lib-dash.min.js",
+  "name": "anoncore-lib",
+  "main": "./anoncore-lib.min.js",
   "version": "0.15.3",
-  "homepage": "https://github.com/dashevo/bitcore-lib-dash",
+  "homepage": "https://github.com/dashevo/anoncore-lib",
   "authors": [
     "Dash", "BitPay, Inc."
   ],
