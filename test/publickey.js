@@ -353,10 +353,11 @@ describe('PublicKey', function() {
     // wif private key, address
     // see: https://github.com/dashpay/dash/blob/master/src/test/key_tests.cpp#L20
     var data = [
-      ['7qh6LYnLN2w2ntz2wwUhRUEgkQ2j8XB16FGw77ZRDZmC29bn7cD', 'Xywgfc872nn5CKtpATCoAjZCc4v96pJczy'],
-      ['7rve4MxeWFQHGbSYH6J2yaaZd3MBUqoDEwN6ZAZ6ZHmhTT4r3hW', 'XpmouUj9KKJ99ZuU331ZS1KqsboeFnLGgK'],
-      ['XBuxZHH6TqXUuaSjbVTFR1DQSYecxCB9QA1Koyx5tTc3ddhqEnhm', 'XxV9h4Xmv6Pup8tVAQmH97K6grzvDwMG9F'],
-      ['XHMkZqWcY6Zkoq1j42NBijD8z5N5FtNy2Wx7WyAfXX2HZgxry8cr', 'Xn7ZrYdExuk79Dm7CJCw7sfUWi2qWJSbRy']
+      // ['KzCymewBDZb7L6mjsGiQiZfCqDUZLE1oHWA5TjRLQgE2xwrh7KhC', 'AncjBrgFrHMT4xwj8qjbgt757q7dhTCmwng'],
+      // ['KzCymewBDZb7L6mjsGiQiZfCqDUZLE1oHWA5TjRLQgE2xwrh7KhC', 'AncjBrgFrHMT4xwj8qjbgt757q7dhTCmwng'],
+      // ['KycpEq9JhdNJvncAgmM8mjpEUUaCYoXSjs23XJ6Z4MZ65HAU1w6t', 'AnNKvLS8MkobVFxPaYUa3wWcit7ZYrqSkoi'],
+      // ['L1FjZxmJgARDBgrT2UUwm6sh9TTjKNFHEgg6L3AYvCLjWMBH8L4M', 'AniphpCexJUy4RZe9GRj5U28E4EahW9oPd8'],
+      // ['L3mXtY9DpWoBC9dGzmQxEoST6qkoMsFQW5NWQpWnnp3gWRSGxSCS', 'AnR4QzQLTkQTQaxxLzqAyX2twS2vPWnb95b']
     ];
 
     data.forEach(function(d){
@@ -389,9 +390,9 @@ describe('PublicKey', function() {
     });
 
     it('should output known compressed pubkey with network for console', function() {
-      var privkey = PrivateKey.fromWIF('XHWwKGqugqSRkcpuiWyDJXSHhjWGCidZ5HLwf9ScMLaEeDTRHepq');
+      var privkey = PrivateKey.fromWIF('KycpEq9JhdNJvncAgmM8mjpEUUaCYoXSjs23XJ6Z4MZ65HAU1w6t');
       var pubkey = new PublicKey(privkey);
-      pubkey.inspect().should.equal('<PublicKey: 03c87bd0e162f26969da8509cafcb7b8c8d202af30b928c582e263dd13ee9a9781>');
+      pubkey.inspect().should.equal('<PublicKey: AnNKvLS8MkobVFxPaYUa3wWcit7ZYrqSkoi>');
     });
 
   });

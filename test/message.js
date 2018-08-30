@@ -13,7 +13,7 @@ describe('Message', function() {
 
   var address = 'yZKdLYCvDXa2kyQr8Tg3N6c3xeZoK7XDcj';
   var badAddress = 'yj3v6A6gQkiRbChbGwvahiFZ6EfpYxk9na';
-  var privateKey = bitcore.PrivateKey.fromWIF('cR4qogdN9UxLZJXCNFNwDRRZNeLRWuds9TTSuLNweFVjiaE4gPaq');
+  var privateKey = bitcore.PrivateKey.fromWIF('KzCymewBDZb7L6mjsGiQiZfCqDUZLE1oHWA5TjRLQgE2xwrh7KhC');
   var text = 'hello, world';
   var signatureString = 'IB+LpNmaTAkB8e6fGgocGKuZ2tAXJ4ZmhhVs7FbOOcHjHPgMHycpAFIl1ojb+PA6jyhufeOKQZKjPnI8VQnevRI=';
 
