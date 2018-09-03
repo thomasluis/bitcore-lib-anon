@@ -6,9 +6,9 @@ var bitcore = module.exports;
 bitcore.version = 'v' + require('./package.json').version;
 bitcore.versionGuard = function(version) {
   if (version !== undefined) {
-    var message = 'More than one instance of bitcore-lib-btcp found. ' +
-      'Please make sure to require bitcore-lib-btcp and check that submodules do ' +
-      'not also include their own bitcore-lib-btcp dependency.';
+    var message = 'More than one instance of bitcore-lib-anon found. ' +
+      'Please make sure to require bitcore-lib-anon and check that submodules do ' +
+      'not also include their own bitcore-lib-anon dependency.';
     // TODO: put this back if we start versioning again (?)
     //throw new Error(message);
   }
