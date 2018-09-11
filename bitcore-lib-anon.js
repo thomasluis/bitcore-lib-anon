@@ -4673,7 +4673,7 @@ var testnet = get('testnet');
 
 var TESTNET = {
   PORT: 33129,
-  NETWORK_MAGIC: BufferUtil.integerAsBuffer(0xfa1af9bf),
+  NETWORK_MAGIC: BufferUtil.integerAsBuffer(0x7a748d38),
   DNS_SEEDS: [
   ]
 };
