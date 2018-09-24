@@ -58,6 +58,7 @@ bitcore.Transaction = require('./lib/transaction');
 bitcore.GovObject = require('./lib/govobject');
 bitcore.URI = require('./lib/uri');
 bitcore.Unit = require('./lib/unit');
+bitcore.Message = require('./lib/message')
 
 // dependencies, subject to change
 bitcore.deps = {};
@@ -68,5 +69,4 @@ bitcore.deps.elliptic = require('elliptic');
 bitcore.deps._ = require('lodash');
 
 // Internal usage, exposed for testing/advanced tweaking
-bitcore._HDKeyCache = require('./lib/hdkeycache');
 bitcore.Transaction.sighash = require('./lib/transaction/sighash');

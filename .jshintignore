@@ -1,0 +1,5 @@
+./node_modules/*
+anoncore-lib.js
+anoncore-lib.min.js
+./test/*
+./dist/*

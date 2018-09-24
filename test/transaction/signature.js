@@ -14,15 +14,14 @@ var PrivateKey = bitcore.PrivateKey;
 var errors = bitcore.errors;
 
 describe('TransactionSignature', function() {
-
-  var fromAddress = 'mszYqVnqKoQx4jcTdJXxwKAissE3Jbrrc1';
-  var privateKey = 'cSBnVM4xvxarwGQuAfQFwqDg9k5tErHUHzgWsEfD4zdwUasvqRVY';
+  var fromAddress = 'tAH2c8qsUeNefUeYHYhdaVrPY9ovgKXCnRC';
+  var privateKey = 'L52Qxna6RuqpQxVsHT1AL8vmeKjq5w6TUsLMjWGzvnBuytfPKqvK';
   var simpleUtxoWith100000Satoshis = {
     address: fromAddress,
-    txId: 'a477af6b2667c29670467e4e0728b685ee07b240235771862318e29ddbe58458',
+    txId: 'e92e579558fb442d1857b96142d4e384514dd34fe2c52aa4db3aa7dd4a694d7e',
     outputIndex: 0,
     script: Script.buildPublicKeyHashOut(fromAddress).toString(),
-    satoshis: 100000
+    satoshis: 100000000
   };
 
   var getSignatureFromTransaction = function() {

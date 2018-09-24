@@ -9,20 +9,19 @@ var bitcore = require('../..');
 var UnspentOutput = bitcore.Transaction.UnspentOutput;
 
 describe('UnspentOutput', function() {
-
   var sampleData1 = {
-    'address': 'mszYqVnqKoQx4jcTdJXxwKAissE3Jbrrc1',
+    'address': 'tAH2c8qsUeNefUeYHYhdaVrPY9ovgKXCnRC',
     'txId': 'a477af6b2667c29670467e4e0728b685ee07b240235771862318e29ddbe58458',
     'outputIndex': 0,
-    'script': 'OP_DUP OP_HASH160 20 0x88d9931ea73d60eaf7e5671efc0552b912911f2a OP_EQUALVERIFY OP_CHECKSIG',
-    'satoshis': 1020000
+    'script': 'OP_DUP OP_HASH160 54ad629346f41bc75ab47639bf7fe1e3d28c6e99 OP_EQUALVERIFY OP_CHECKSIG',
+    'satoshis': 100000000
   };
   var sampleData2 = {
-    'txid': 'e42447187db5a29d6db161661e4bc66d61c3e499690fe5ea47f87b79ca573986',
+    'txid': '05a17e70be82b717335df486c56bfa346950f43df3106e80ca22b8a8dbde2073',
     'vout': 1,
-    'address': 'mgBCJAsvzgT2qNNeXsoECg2uPKrUsZ76up',
-    'scriptPubKey': '76a914073b7eae2823efa349e3b9155b8a735526463a0f88ac',
-    'amount': 0.01080000
+    'address': 'tAK2M6LnsXcVF2wToSCfwFV3FrLzNPJPj8s',
+    'scriptPubKey': '76a914649c295f3ca23cf672022344c8368035ae0cc9ef88ac',
+    'amount': 2
   };
 
   it('roundtrip from raw data', function() {
@@ -49,7 +48,7 @@ describe('UnspentOutput', function() {
 
   it('displays nicely on the console', function() {
     var expected = '<UnspentOutput: a477af6b2667c29670467e4e0728b685ee07b240235771862318e29ddbe58458:0' +
-                   ', satoshis: 1020000, address: mszYqVnqKoQx4jcTdJXxwKAissE3Jbrrc1>';
+                   ', satoshis: 100000000, address: tAH2c8qsUeNefUeYHYhdaVrPY9ovgKXCnRC>';
     expect(new UnspentOutput(sampleData1).inspect()).to.equal(expected);
   });
 

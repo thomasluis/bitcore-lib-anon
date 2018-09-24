@@ -323,4 +323,3 @@ Object._assign = function (target, varArgs) { // .length of function is 2
   }
   return to;
 };
-
