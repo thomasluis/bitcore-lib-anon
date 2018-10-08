@@ -124,7 +124,7 @@
     "sha512": "=0.0.1"
   },
   "devDependencies": {
-    "bitcore-build-anon": "git://github.com/anonymousbitcoin/bitcore-build-anon.git",
+    "bitcore-build-anon": "git+https://github.com/anonymousbitcoin/bitcore-build-anon.git",
     "brfs": "^1.2.0",
     "chai": "^1.10.0",
     "gulp": "^3.8.10",

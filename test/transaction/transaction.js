@@ -81,10 +81,7 @@ describe('Transaction', function() {
   });
 
   it('serialize to Object roundtrip', function() {
-    console.log("aaaaaaaahhhhhhhh");
     var a = testTransaction.toObject();
-    console.log("A IS THIS", a);
-    console.log("B IS ThIS");
     try {
       new Transaction(a);
     } catch (error) {

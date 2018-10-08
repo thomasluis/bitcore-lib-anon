@@ -31422,7 +31422,6 @@ Address._transformString = function(data, network, type) {
   }
   data = data.trim();
   var addressBuffer = Base58Check.decode(data);
-  console.log("I AM INSIDE OF TRANSFORMSTRING AND MY DATA IS", data, "MY NETWORK IS", network, " MY TYPE IS", type );
   var info = Address._transformBuffer(addressBuffer, network, type);
   return info;
 };
