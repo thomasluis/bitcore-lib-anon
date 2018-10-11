@@ -6,14 +6,14 @@ var bitcore = module.exports;
 bitcore.version = 'v' + require('./package.json').version;
 bitcore.versionGuard = function(version) {
   if (version !== undefined) {
-    var message = 'More than one instance of bitcore-lib-xsg found. ' +
-      'Please make sure to require bitcore-lib-xsg and check that submodules do' +
-      ' not also include their own bitcore-lib-xsg dependency.';
+    var message = 'More than one instance of bitcore-lib-anon found. ' +
+      'Please make sure to require bitcore-lib-anon and check that submodules do' +
+      ' not also include their own bitcore-lib-anon dependency.';
     throw new Error(message);
   }
 };
-bitcore.versionGuard(global._bitcoreXsg);
-global._bitcoreXsg = bitcore.version;
+bitcore.versionGuard(global._bitcoreAnon);
+global._bitcoreAnon = bitcore.version;
 
 // crypto
 bitcore.crypto = {};
