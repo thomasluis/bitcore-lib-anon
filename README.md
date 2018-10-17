@@ -1,10 +1,6 @@
 Bitcore Library
 =======
 
-[![NPM Package](https://img.shields.io/npm/v/bitcore-lib.svg?style=flat-square)](https://www.npmjs.org/package/bitcore-lib)
-[![Build Status](https://img.shields.io/travis/bitpay/bitcore-lib.svg?branch=master&style=flat-square)](https://travis-ci.org/bitpay/bitcore-lib)
-[![Coverage Status](https://img.shields.io/coveralls/bitpay/bitcore-lib.svg?style=flat-square)](https://coveralls.io/r/bitpay/bitcore-lib)
-
 A pure and powerful JavaScript Bitcoin library.
 
 ## Principles
@@ -14,11 +10,7 @@ Bitcoin is a powerful new peer-to-peer platform for the next generation of finan
 ## Get Started
 
 ```
-npm install bitcore-lib
-```
-
-```
-bower install bitcore-lib
+npm install bitcore-lib-anon
 ```
 
 ## Documentation
@@ -51,32 +43,24 @@ If you find a security issue, please email security@bitpay.com.
 
 ## Contributing
 
-Please send pull requests for bug fixes, code optimization, and ideas for improvement. For more information on how to contribute, please refer to our [CONTRIBUTING](https://github.com/bitpay/bitcore-lib/blob/master/CONTRIBUTING.md) file.
+Please send pull requests for bug fixes, code optimization, and ideas for improvement. For more information on how to contribute, please refer to our [CONTRIBUTING](https://github.com/anonymousbitcoin/bitcore-lib-anon/blob/master/CONTRIBUTING.md) file.
 
 ## Building the Browser Bundle
 
-To build a bitcore-lib full bundle for the browser:
+To build a bitcore-lib-anon full bundle for the browser:
 
 ```sh
 gulp browser
 ```
 
-This will generate files named `bitcore-lib.js` and `bitcore-lib.min.js`.
-
-You can also use our pre-generated files, provided for each release along with a PGP signature by one of the project's maintainers. To get them, checkout a release commit (for example, https://github.com/bitpay/bitcore-lib/commit/e33b6e3ba6a1e5830a079e02d949fce69ea33546 for v0.12.6).
-
-To verify signatures, use the following PGP keys:
-- @braydonf: https://pgp.mit.edu/pks/lookup?op=get&search=0x9BBF07CAC07A276D `D909 EFE6 70B5 F6CC 89A3 607A 9BBF 07CA C07A 276D`
-- @gabegattis: https://pgp.mit.edu/pks/lookup?op=get&search=0x441430987182732C `F3EA 8E28 29B4 EC93 88CB  B0AA 4414 3098 7182 732C`
-- @kleetus: https://pgp.mit.edu/pks/lookup?op=get&search=0x33195D27EF6BDB7F `F8B0 891C C459 C197 65C2 5043 3319 5D27 EF6B DB7F`
-- @matiu: https://pgp.mit.edu/pks/lookup?op=get&search=0x9EDE6DE4DE531FAC `25CE ED88 A1B1 0CD1 12CD  4121 9EDE 6DE4 DE53 1FAC`
+This will generate files named `bitcore-lib-anon.js` and `bitcore-lib-anon.min.js`.
 
 
 ## Development & Tests
 
 ```sh
-git clone https://github.com/bitpay/bitcore-lib
-cd bitcore-lib
+git clone https://github.com/anonymousbitcoin/bitcore-lib-anon
+cd bitcore-lib-anon
 npm install
 ```
 
