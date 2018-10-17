@@ -2535,6 +2535,7 @@ Signature.SIGHASH_ALL = 0x01;
 Signature.SIGHASH_NONE = 0x02;
 Signature.SIGHASH_SINGLE = 0x03;
 Signature.SIGHASH_ANYONECANPAY = 0x80;
+Signature.SIGHASH_FORKID = 0x40;
 
 module.exports = Signature;
 
@@ -10503,7 +10504,7 @@ Transaction.prototype.sign = function(privateKey, sigtype) {
 
 Transaction.prototype.getSignatures = function(privKey, sigtype) {
   privKey = new PrivateKey(privKey);
-  sigtype = sigtype || Signature.SIGHASH_ALL;
+  sigtype = sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8;
   var transaction = this;
   var results = [];
   var hashData = Hash.sha256ripemd160(privKey.publicKey.toBuffer());
