@@ -1,5 +1,5 @@
 
 
-var bitcoreTasks = require('bitcore-build');
+var bitcoreTasks = require('bitcore-build-anon');
 
 bitcoreTasks('lib');
