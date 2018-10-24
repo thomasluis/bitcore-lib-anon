@@ -1,7 +1,7 @@
 {
   "name": "bitcore-lib-anon",
   "main": "./bitcore-lib-anon.min.js",
-  "version": "5.0.0-beta.1",
+  "version": "1.0.3",
   "homepage": "http://bitcore.io",
   "authors": ["BitPay, Inc."],
   "description": "A pure, powerful core for your bitcoin project.",

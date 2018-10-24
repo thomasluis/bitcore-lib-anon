@@ -54022,7 +54022,7 @@ arguments[4][262][0].apply(exports,arguments)
 },{}],320:[function(require,module,exports){
 module.exports={
   "name": "bitcore-lib-anon",
-  "version": "0.15.0",
+  "version": "1.0.3",
   "description": "A pure and powerful JavaScript Bitcoin library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",
@@ -54056,6 +54056,7 @@ module.exports={
     "request": "browser-request"
   },
   "dependencies": {
+    "bitcore-build-anon": "^1.0.0",
     "bn.js": "=4.11.8",
     "bs58": "=4.0.1",
     "buffer-compare": "=1.1.1",
