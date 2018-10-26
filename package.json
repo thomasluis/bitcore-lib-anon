@@ -1,14 +1,14 @@
 {
-  "description": "A pure and powerful JavaScript Bitcoin library.",
-  "author": {
-    "name": "Anon Foundation",
-    "email": "disclosure@bushidolab.com"
-  },
-  "browser": {
-    "request": "browser-request"
-  },
-  "bugs": {
-    "url": "https://github.com/anonymousbitcoin/bitcore-lib-anon/issues"
+  "name": "bitcore-lib-anon",
+  "version": "1.0.6",
+  "description": "A pure and powerful JavaScript Anon bitcore library.",
+  "author": "BitPay <dev@bitpay.com>",
+  "main": "index.js",
+  "scripts": {
+    "lint": "gulp lint",
+    "test": "gulp test",
+    "coverage": "gulp coverage",
+    "build": "gulp"
   },
   "contributors": [
     {
@@ -54,32 +54,20 @@
     {
       "name": "Wei Lu",
       "email": "luwei.here@gmail.com"
+    },
+    {
+      "name": "Jack Grigg",
+      "email": "jack@z.cash"
     }
   ],
-  "dependencies": {
-    "bitcore-build-anon": "^1.0.0",
-    "bn.js": "=4.11.8",
-    "bs58": "=4.0.1",
-    "buffer-compare": "=1.1.1",
-    "elliptic": "=6.4.0",
-    "inherits": "=2.0.1",
-    "lodash": "=4.17.4"
-  },
-  "devDependencies": {
-    "bitcore-build-anon": "^1.0.0",
-    "brfs": "^1.2.0",
-    "chai": "^1.10.0",
-    "gulp": "^3.8.10",
-    "sinon": "^1.13.0"
-  },
-  "directories": {},
-  "homepage": "https://github.com/anonymousbitcoin/bitcore-lib-anon#readme",
   "keywords": [
-    "bitcoin",
+    "anon",
+    "zcl",
+    "zcash",
     "transaction",
     "address",
     "p2p",
-    "ecies",
+    "cryptocurrencies",
     "cryptocurrency",
     "blockchain",
     "payment",
@@ -90,42 +78,27 @@
     "bip70",
     "multisig"
   ],
-  "license": "MIT",
-  "main": "index.js",
-  "maintainers": [
-    {
-      "name": "braydonf",
-      "email": "courier@braydon.com"
-    },
-    {
-      "name": "gabegattis",
-      "email": "gabegattis@gmail.com"
-    },
-    {
-      "name": "gasteve",
-      "email": "stephen@pairhome.net"
-    },
-    {
-      "name": "kleetus",
-      "email": "laconia@gmail.com"
-    },
-    {
-      "name": "patrickbitpay",
-      "email": "patrick@bitpay.com"
-    }
-  ],
-  "name": "bitcore-lib-anon",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anonymousbitcoin/bitcore-lib-anon.git"
+    "url": "https://github.com/anonymousbitcoin/bitcore-lib-anon"
   },
-  "scripts": {
-    "build": "gulp",
-    "coverage": "gulp coverage",
-    "lint": "gulp lint",
-    "test": "mocha"
+  "browser": {
+    "request": "browser-request"
   },
-  "version": "1.0.6"
+  "dependencies": {
+    "bn.js": "=2.0.4",
+    "bs58": "=2.0.0",
+    "buffer-compare": "=1.0.0",
+    "elliptic": "=3.0.3",
+    "inherits": "=2.0.1",
+    "lodash": "=3.10.1"
+  },
+  "devDependencies": {
+    "bitcore-build-anon": "^1.0.0",
+    "brfs": "^1.2.0",
+    "chai": "^1.10.0",
+    "gulp": "^3.8.10",
+    "sinon": "^1.13.0"
+  },
+  "license": "MIT"
 }

@@ -1,12 +1,24 @@
 {
   "name": "bitcore-lib-anon",
   "main": "./bitcore-lib-anon.min.js",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "homepage": "http://bitcore.io",
-  "authors": ["BitPay, Inc."],
-  "description": "A pure, powerful core for your bitcoin project.",
-  "moduleType": ["globals"],
-  "keywords": ["bitcoin", "bitcore", "btc", "satoshi"],
+  "authors": [
+    "BitPay, Inc.",
+    "Jack Grigg"
+  ],
+  "description": "A pure, powerful bitcore-lib for anon.",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "zcash",
+    "anon",
+    "bitcore",
+    "bitcoin",
+    "btc",
+    "satoshi"
+  ],
   "license": "MIT",
   "ignore": [
     "**/.*",

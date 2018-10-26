@@ -1,4 +1,4 @@
-# Bitcore v0.15.0
+# Bitcore v0.13
 
 ## Principles
 
@@ -35,16 +35,16 @@ To get started, just `npm install bitcore` or `bower install bitcore`.
 
 Some functionality is implemented as a module that can be installed separately:
 
-* [Payment Protocol Support](https://github.com/anonymousbitcoin/bitcore-payment-protocol)
-* [Peer to Peer Networking](https://github.com/anonymousbitcoin/bitcore-p2p)
+* [Payment Protocol Support](https://github.com/bitpay/bitcore-payment-protocol)
+* [Peer to Peer Networking](https://github.com/bitpay/bitcore-p2p)
 * [Bitcoin Core JSON-RPC](https://github.com/bitpay/bitcoind-rpc)
 * [Payment Channels](https://github.com/bitpay/bitcore-channel)
 * [Mnemonics](https://github.com/bitpay/bitcore-mnemonic)
 * [Elliptical Curve Integrated Encryption Scheme](https://github.com/bitpay/bitcore-ecies)
 * [Blockchain Explorers](https://github.com/bitpay/bitcore-explorers)
-* [Signed Messages](https://github.com/anonymousbitcoin/bitcore-message-anon)
+* [Signed Messages](https://github.com/bitpay/bitcore-message)
 
-# Examples
+# Examples 
 
 ## Create and Save a Private Key
 
