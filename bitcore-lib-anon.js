@@ -8063,7 +8063,7 @@ Script.buildPublicKeyIn = function(signature, sigtype) {
   var script = new Script();
   script.add(BufferUtil.concat([
     signature,
-    BufferUtil.integerAsSingleByteBuffer(sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8)
+    BufferUtil.integerAsSingleByteBuffer(Signature.SIGHASH_FORKID | 42 << 8)
   ]));
   return script;
 };
@@ -8085,7 +8085,7 @@ Script.buildPublicKeyHashIn = function(publicKey, signature, sigtype) {
   var script = new Script()
     .add(BufferUtil.concat([
       signature,
-      BufferUtil.integerAsSingleByteBuffer(sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8)
+      BufferUtil.integerAsSingleByteBuffer(Signature.SIGHASH_FORKID | 42 << 8)
     ]))
     .add(new PublicKey(publicKey).toBuffer());
   return script;
@@ -8572,7 +8572,7 @@ MultiSigInput.prototype._serializeSignatures = function() {
 
 MultiSigInput.prototype.getSignatures = function(transaction, privateKey, index, sigtype) {
   $.checkState(this.output instanceof Output);
-  sigtype = sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8;
+  sigtype = Signature.SIGHASH_FORKID | 42 << 8;
 
   var self = this;
   var results = [];
@@ -8785,7 +8785,7 @@ MultiSigScriptHashInput.prototype._serializeSignatures = function() {
 
 MultiSigScriptHashInput.prototype.getSignatures = function(transaction, privateKey, index, sigtype) {
   $.checkState(this.output instanceof Output);
-  sigtype = sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8;
+  sigtype = Signature.SIGHASH_FORKID | 42 << 8;
 
   var self = this;
   var results = [];
@@ -8919,7 +8919,7 @@ inherits(PublicKeyInput, Input);
  */
 PublicKeyInput.prototype.getSignatures = function(transaction, privateKey, index, sigtype) {
   $.checkState(this.output instanceof Output);
-  sigtype = sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8;
+  sigtype = Signature.SIGHASH_FORKID | 42 << 8;
   var publicKey = privateKey.toPublicKey();
   if (publicKey.toString() === this.output.script.getPublicKey().toString('hex')) {
     return [new TransactionSignature({
@@ -9014,7 +9014,7 @@ inherits(PublicKeyHashInput, Input);
 PublicKeyHashInput.prototype.getSignatures = function(transaction, privateKey, index, sigtype, hashData) {
   $.checkState(this.output instanceof Output);
   hashData = hashData || Hash.sha256ripemd160(privateKey.publicKey.toBuffer());
-  sigtype = sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8;
+  sigtype = Signature.SIGHASH_FORKID | 42 << 8;
 
   if (BufferUtil.equals(hashData, this.output.script.getPublicKeyHash())) {
     return [new TransactionSignature({
@@ -10798,7 +10798,7 @@ Transaction.prototype.sign = function(privateKey, sigtype) {
 
 Transaction.prototype.getSignatures = function(privKey, sigtype) {
   privKey = new PrivateKey(privKey);
-  sigtype = sigtype || Signature.SIGHASH_ALL | Signature.SIGHASH_FORKID | 42 << 8;
+  sigtype = Signature.SIGHASH_FORKID | 42 << 8;
   var transaction = this;
   var results = [];
   var hashData = Hash.sha256ripemd160(privKey.publicKey.toBuffer());
@@ -54520,7 +54520,7 @@ module.exports={
     "lint": "gulp lint",
     "test": "mocha"
   },
-  "version": "1.0.6"
+  "version": "1.0.8"
 }
 
 },{}],"bitcore-lib-anon":[function(require,module,exports){
