@@ -7,14 +7,13 @@ bitcore.version = 'v' + require('./package.json').version;
 bitcore.versionGuard = function(version) {
   if (version !== undefined) {
     var message = 'More than one instance of bitcore-lib-anon found. ' +
-      'Please make sure to require bitcore-lib-anon and check that submodules do ' +
-      'not also include their own bitcore-lib-anon dependency.';
-    // TODO: put this back if we start versioning again (?)
-    //throw new Error(message);
+      'Please make sure to require bitcore-lib-anon and check that submodules do' +
+      ' not also include their own bitcore-lib-anon dependency.';
+    throw new Error(message);
   }
 };
-bitcore.versionGuard(global._bitcore);
-global._bitcore = bitcore.version;
+bitcore.versionGuard(global._bitcoreAnon);
+global._bitcoreAnon = bitcore.version;
 
 // crypto
 bitcore.crypto = {};

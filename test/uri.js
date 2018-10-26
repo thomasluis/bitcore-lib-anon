@@ -32,6 +32,7 @@ describe('URI', function() {
     expect(uri.otherParam).to.be.undefined();
 
     uri = URI.parse('anon:AniknENWKqvMSAXZYEGPdFtRrKabRKqgEVJ?amount=123.22' +
+
                     '&other-param=something&req-extra=param');
     uri.address.should.equal('AniknENWKqvMSAXZYEGPdFtRrKabRKqgEVJ');
     uri.amount.should.equal('123.22');
@@ -51,12 +52,14 @@ describe('URI', function() {
     URI.isValid('anon:AniknENWKqvMSAXZYEGPdFtRrKabRKqgEVJ?amount=1.2&req-other=param',
                 ['req-other']).should.equal(true);
     URI.isValid('anon:tAT953y4AKxaijucuhQmvXMDVSRcqthDFhG?amount=0.1&' +
+
                 'r=https%3A%2F%2Ftest.bitpay.com%2Fi%2F6DKgf8cnJC388irbXk5hHu').should.equal(true);
 
     URI.isValid('anon:').should.equal(false);
     URI.isValid('anon:badUri').should.equal(false);
     URI.isValid('anon:Xo4vyw1FtA88rYPYjbNT9kwhVokHHsSuPH?amount=bad').should.equal(false);
     URI.isValid('anon:Xo4vyw1FtA88rYPYjbNT9kwhVokHHsSuPH?amount=1.2&req-other=param')
+
                 .should.equal(false);
     URI.isValid('anon:?r=https%3A%2F%2Ftest.bitpay.com%2Fi%2F6DKgf8cnJC388irbXk5hHu')
                 .should.equal(false);

@@ -1,16 +1,14 @@
 {
-  "name": "bitcore-lib-anon",
-  "version": "0.13.19-anon",
-  "description": "A pure and powerful JavaScript btcp bitcore library.",
-  "author": "BitPay <dev@bitpay.com>",
-  "main": "index.js",
-  "scripts": {
-    "lint": "jshint . || true",
-    "test": "npm run build && npm run test:node && npm run test:browser && npm run lint",
-    "test:node": "mocha --no-timeouts --recursive",
-    "test:browser": "karma start ./karma.conf.js --single-run",
-    "coverage": "nyc mocha --recursive",
-    "build": "webpack --display-error-details"
+  "description": "A pure and powerful JavaScript Bitcoin library.",
+  "author": {
+    "name": "Anon Foundation",
+    "email": "disclosure@bushidolab.com"
+  },
+  "browser": {
+    "request": "browser-request"
+  },
+  "bugs": {
+    "url": "https://github.com/anonymousbitcoin/bitcore-lib-anon/issues"
   },
   "contributors": [
     {
@@ -82,6 +80,24 @@
       "email": "jack@z.cash"
     }
   ],
+  "dependencies": {
+    "bitcore-build-anon": "^1.0.0",
+    "bn.js": "=4.11.8",
+    "bs58": "=4.0.1",
+    "buffer-compare": "=1.1.1",
+    "elliptic": "=6.4.0",
+    "inherits": "=2.0.1",
+    "lodash": "=4.17.4"
+  },
+  "devDependencies": {
+    "bitcore-build-anon": "^1.0.0",
+    "brfs": "^1.2.0",
+    "chai": "^1.10.0",
+    "gulp": "^3.8.10",
+    "sinon": "^1.13.0"
+  },
+  "directories": {},
+  "homepage": "https://github.com/anonymousbitcoin/bitcore-lib-anon#readme",
   "keywords": [
     "anon",
     "zcl",
@@ -102,48 +118,42 @@
     "multisig",
     "anoncore"
   ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "braydonf",
+      "email": "courier@braydon.com"
+    },
+    {
+      "name": "gabegattis",
+      "email": "gabegattis@gmail.com"
+    },
+    {
+      "name": "gasteve",
+      "email": "stephen@pairhome.net"
+    },
+    {
+      "name": "kleetus",
+      "email": "laconia@gmail.com"
+    },
+    {
+      "name": "patrickbitpay",
+      "email": "patrick@bitpay.com"
+    }
+  ],
+  "name": "bitcore-lib-anon",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anonymousbitcoin/bitcore-lib-anon"
+    "url": "git+https://github.com/anonymousbitcoin/bitcore-lib-anon.git"
   },
-  "bugs": {
-    "url": "https://github.com/anonymousbitcoin/bitcore-lib-anon"
+  "scripts": {
+    "build": "gulp",
+    "coverage": "gulp coverage",
+    "lint": "gulp lint",
+    "test": "mocha"
   },
-  "homepage": "https://github.com/anonymousbitcoin/dashcore-lib",
-  "browser": {
-    "request": "browser-request"
-  },
-  "dependencies": {
-    "@dashevo/x11-hash-js": "^1.0.2",
-    "bn.js": "=2.0.4",
-    "bs58": "=2.0.0",
-    "buffer-compare": "=1.0.0",
-    "elliptic": "=3.0.3",
-    "inherits": "=2.0.1",
-    "lodash": "^4.17.10",
-    "sha512": "=0.0.1"
-  },
-  "devDependencies": {
-    "bitcore-build-anon": "git+https://github.com/anonymousbitcoin/bitcore-build-anon.git",
-    "brfs": "^1.2.0",
-    "chai": "^1.10.0",
-    "gulp": "^3.8.10",
-    "jshint": "^2.9.6",
-    "karma": "^2.0.0",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-detect-browsers": "^2.2.6",
-    "karma-firefox-launcher": "^1.1.0",
-    "karma-mocha": "^1.3.0",
-    "karma-mocha-reporter": "^2.2.5",
-    "karma-webpack": "^3.0.0",
-    "mocha": "^5.0.4",
-    "nyc": "^11.6.0",
-    "raw-loader": "^0.5.1",
-    "sinon": "^4.2.2",
-    "transform-loader": "^0.2.4",
-    "uglifyjs-webpack-plugin": "^1.2.4",
-    "webpack": "^3.10.0"
-  },
-  "license": "MIT"
+  "version": "1.0.9"
 }
