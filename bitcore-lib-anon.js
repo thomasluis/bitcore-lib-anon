@@ -8481,7 +8481,7 @@ Input.prototype.clearSignatures = function() {
 
 Input.prototype.isValidSignature = function(transaction, signature) {
   // FIXME: Refactor signature so this is not necessary
-  signature.signature.nhashtype = signature.sigtype;
+  signature.signature.nhashtype = signature.sigtype == 65 ? signature.sigtype | 42 << 8 : signature.sigtype;
   return Sighash.verify(
     transaction,
     signature.signature,
