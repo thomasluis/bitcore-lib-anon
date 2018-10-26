@@ -1,6 +1,6 @@
 {
   "name": "bitcore-lib-anon",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A pure and powerful JavaScript Anon bitcore library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",
