@@ -254,15 +254,15 @@ describe('PrivateKey', function() {
 
   describe('#toAddress', function() {
     it('should output this known livenet address correctly', function() {
-      var privkey = PrivateKey.fromWIF('XHWwKGqugqSRkcpuiWyDJXSHhjWGCidZ5HLwf9ScMLaEeDTRHepq');
+      var privkey = PrivateKey.fromWIF('L4aBHtagKsLKfFj2DapBee3SY7ZY6oduo7WYst4c49MdzZ6YhEY3');
       var address = privkey.toAddress();
-      address.toString().should.equal('XjnkiGYQkC3bbAzvDjP7jkNouHCHNRr3ug');
+      address.toString().should.equal('t1TWzuP4pPGCpBHJ2EoHzRb1mAbn4kEhN5S');
     });
 
     it('should output this known testnet address correctly', function() {
       var privkey = PrivateKey.fromWIF('cR4qogdN9UxLZJXCNFNwDRRZNeLRWuds9TTSuLNweFVjiaE4gPaq');
       var address = privkey.toAddress();
-      address.toString().should.equal('yZKdLYCvDXa2kyQr8Tg3N6c3xeZoK7XDcj');
+      address.toString().should.equal('tmNiXpWP8BFzU1B94JtAHU2Gahfme72EQW7');
     });
 
     it('creates network specific address', function() {
@@ -445,13 +445,13 @@ describe('PrivateKey', function() {
   });
 
   it('creates an address as expected from WIF, livenet', function() {
-    var privkey = new PrivateKey('7qkwwtzK51WnYkQSGzikZ2M7frFEf9N5J3GMtJZrAavjiLSqxag');
-    privkey.publicKey.toAddress().toString().should.equal('XcmSnAL9AUvMXQe2W6BXVzXidR5Qua5Kjt');
+    var privkey = new PrivateKey('L1E4989pjsga7CAUF3cRRbbPsMwrSAnXsrzctZdQFmG4KRtXoe4i');
+    privkey.publicKey.toAddress().toString().should.equal('t1QZg1VyL6muEDaYpeVgfz91sC4q7r6ePMh');
   });
 
   it('creates an address as expected from WIF, testnet', function() {
     var privkey = new PrivateKey('92VYMmwFLXRwXn5688edGxYYgMFsc3fUXYhGp17WocQhU6zG1kd');
-    privkey.publicKey.toAddress().toString().should.equal('yUWfUV8HbLH6aWjkyxftHRR6SfQjxwemFJ');
+    privkey.publicKey.toAddress().toString().should.equal('tmHuZxTJVZ4hXpiTyAPA8PM5dBgcakaLmge');
   });
 
 });

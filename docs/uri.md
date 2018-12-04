@@ -4,9 +4,9 @@ Represents a Dash payment URI. Dash URI strings is a good standard to share paym
 URI Examples:
 
 ```
-dash:XuUGDZHrKLo841CyamDbG5W7n59epA71h2
-dash:XuUGDZHrKLo841CyamDbG5W7n59epA71h2?amount=1.2
-dash:XuUGDZHrKLo841CyamDbG5W7n59epA71h2?amount=1.2&message=Payment&label=Satoshi&extra=other-param
+anon:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu
+anon:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2
+anon:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment&label=Satoshi&extra=other-param
 ```
 
 ## URI Validation
@@ -15,7 +15,7 @@ The main use that we expect you'll have for the `URI` class in Dashcore is valid
 The code for validating URIs looks like this:
 
 ```javascript
-var uriString = 'dash:XuUGDZHrKLo841CyamDbG5W7n59epA71h2?amount=1.2';
+var uriString = 'anon:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2';
 var valid = URI.isValid(uriString);
 var uri = new URI(uriString);
 console.log(uri.address.network, uri.amount); // 'livenet', 120000000
